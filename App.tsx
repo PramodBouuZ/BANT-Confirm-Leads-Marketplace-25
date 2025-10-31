@@ -57,8 +57,12 @@ export interface Enquiry {
     authority: string;
     need: string;
     timeline: string;
+    // User details from submission
     userName: string;
     userEmail: string;
+    userMobile: string;
+    userCompany: string;
+    userLocation: string;
     status: EnquiryStatus;
     assignedVendor?: string;
 }
@@ -168,13 +172,16 @@ const App: React.FC = () => {
     setPrefilledEnquiry('');
   };
 
-  const handleNewEnquiry = (enquiryData: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail'>) => {
+  const handleNewEnquiry = (enquiryData: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation'>) => {
       const newEnquiry: Enquiry = {
           ...enquiryData,
           id: Date.now(),
           status: 'New',
           userName: user?.name || 'N/A',
           userEmail: user?.email || 'N/A',
+          userMobile: user?.mobile || 'N/A',
+          userCompany: user?.company || 'N/A',
+          userLocation: user?.location || 'N/A',
       };
       setEnquiries(prev => [newEnquiry, ...prev]);
   };

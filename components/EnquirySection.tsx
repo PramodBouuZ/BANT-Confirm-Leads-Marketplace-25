@@ -12,10 +12,10 @@ interface EnquirySectionProps {
     isLoggedIn: boolean;
     prefilledEnquiry: string;
     clearPrefilledEnquiry: () => void;
-    onNewEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail'>) => void;
+    onNewEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation'>) => void;
 }
 
-type FormData = Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'assignedVendor'>;
+type FormData = Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation' | 'assignedVendor'>;
 
 const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry, onNewEnquiry }) => {
   const [formData, setFormData] = useState<FormData>({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});

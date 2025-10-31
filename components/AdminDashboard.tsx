@@ -64,8 +64,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
         setEnquiries(enquiries.map(e => e.id === enquiryData.id ? enquiryData : e));
     };
 
-    const handleSaveBanner = (bannerUrl: string) => {
-        setBanners([...banners, { id: Date.now(), image: bannerUrl }]);
+    const handleSaveBanner = (bannerBase64: string) => {
+        setBanners([...banners, { id: Date.now(), image: bannerBase64 }]);
     };
 
     const handleDeleteBanner = (bannerId: number) => {
@@ -197,9 +197,64 @@ const ProductManager: React.FC<{products: Product[], onEdit: (p: Product) => voi
 
 const EnquiryManager: React.FC<{enquiries: Enquiry[], onView: (e: Enquiry) => void}> = ({enquiries, onView}) => {
     const statusColor = { New: 'bg-blue-100 text-blue-800', Approved: 'bg-green-100 text-green-800', Rejected: 'bg-red-100 text-red-800', Assigned: 'bg-yellow-100 text-yellow-800' };
+    
+    const handleDownloadCSV = () => {
+        if (enquiries.length === 0) {
+            alert("No enquiries to download.");
+            return;
+        }
+
+        const headers = [
+            'ID', 'User Name', 'User Email', 'User Mobile', 'User Company', 'User Location',
+            'Enquiry', 'Budget', 'Authority', 'Need', 'Timeline', 'Status', 'Assigned Vendor'
+        ];
+
+        const csvRows = [headers.join(',')];
+
+        const escapeCSV = (str: string | number | undefined) => {
+            if (str === null || str === undefined) return '';
+            const value = String(str);
+            if (value.includes(',')) {
+                return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+        };
+        
+        enquiries.forEach(e => {
+            const row = [
+                e.id, e.userName, e.userEmail, e.userMobile, e.userCompany, e.userLocation,
+                e.enquiryText, e.budget, e.authority, e.need, e.timeline,
+                e.status, e.assignedVendor || ''
+            ].map(escapeCSV);
+            csvRows.push(row.join(','));
+        });
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "enquiries.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+
     return (
     <div className="bg-white p-6 rounded-lg shadow-md animate-fade-in">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">Manage Enquiries</h3>
+        <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-gray-700">Manage Enquiries</h3>
+            <button 
+                onClick={handleDownloadCSV}
+                className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                Download CSV
+            </button>
+        </div>
         {enquiries.length === 0 ? <p className="text-gray-500">No enquiries received yet.</p> : (
         <div className="overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-500">
