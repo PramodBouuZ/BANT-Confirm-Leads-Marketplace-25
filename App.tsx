@@ -15,8 +15,10 @@ import TermsOfServicePage from './components/TermsOfServicePage';
 import CommissionPolicyPage from './components/CommissionPolicyPage';
 import ProfilePage from './components/ProfilePage';
 import BantyAssistant from './components/BantyAssistant';
+import AdminLoginPage from './components/AdminLoginPage';
+import AdminDashboard from './components/AdminDashboard';
 
-export type Page = 'home' | 'about' | 'contact' | 'privacy' | 'terms' | 'commission' | 'profile';
+export type Page = 'home' | 'about' | 'contact' | 'privacy' | 'terms' | 'commission' | 'profile' | 'adminLogin' | 'adminDashboard';
 
 export interface User {
   name: string;
@@ -29,14 +31,22 @@ export interface User {
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [prefilledEnquiry, setPrefilledEnquiry] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProductsCount, setFilteredProductsCount] = useState<number | null>(null);
+  const [unmatchedSearches, setUnmatchedSearches] = useState<string[]>([]);
 
   useEffect(() => {
     if (filteredProductsCount === 0 && searchTerm.trim() !== '') {
-      console.log(`[Admin Panel Record] Unmatched search keyword: "${searchTerm}"`);
+      setUnmatchedSearches(prev => {
+        const newTerm = searchTerm.trim();
+        if (!prev.some(item => item.toLowerCase() === newTerm.toLowerCase())) {
+          return [...prev, newTerm];
+        }
+        return prev;
+      });
     }
   }, [filteredProductsCount, searchTerm]);
 
@@ -63,6 +73,16 @@ const App: React.FC = () => {
     navigate('home');
   };
 
+  const handleAdminLoginSuccess = () => {
+    setIsAdminLoggedIn(true);
+    navigate('adminDashboard');
+  };
+  
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    navigate('home');
+  };
+
   const handleUserUpdate = (updatedUser: User) => {
     setUser(updatedUser);
     // Here you would typically make an API call to save the data
@@ -78,7 +98,18 @@ const App: React.FC = () => {
     setPrefilledEnquiry('');
   };
 
-  const renderPage = () => {
+  // Admin routing
+  if (currentPage === 'adminLogin') {
+    return <AdminLoginPage onAdminLogin={handleAdminLoginSuccess} />;
+  }
+  if (currentPage === 'adminDashboard') {
+    return isAdminLoggedIn 
+      ? <AdminDashboard unmatchedSearches={unmatchedSearches} onAdminLogout={handleAdminLogout} />
+      : <AdminLoginPage onAdminLogin={handleAdminLoginSuccess} />;
+  }
+
+
+  const renderUserPage = () => {
     switch (currentPage) {
       case 'about':
         return <AboutUsPage />;
@@ -132,7 +163,7 @@ const App: React.FC = () => {
         onLogout={handleLogout}
       />
       <main className="flex-grow">
-        {renderPage()}
+        {renderUserPage()}
       </main>
       <Footer onNavigate={navigate} />
     </div>
