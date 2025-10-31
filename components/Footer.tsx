@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { Page } from '../App';
 
 const SocialIcon: React.FC<{ href: string, path: string, title: string }> = ({ href, path, title }) => (
   <a href={href} className="text-gray-400 hover:text-white transition-transform transform hover:scale-125">
@@ -9,7 +11,11 @@ const SocialIcon: React.FC<{ href: string, path: string, title: string }> = ({ h
   </a>
 );
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate: (page: Page) => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -59,10 +65,10 @@ const Footer: React.FC = () => {
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
-            <a href="#" className="text-2xl font-bold">
+            <button onClick={() => onNavigate('home')} className="text-2xl font-bold text-left">
               <span className="text-blue-500">BANT</span>
               <span className="text-yellow-400">Confirm</span>
-            </a>
+            </button>
             <p className="mt-4 text-gray-400 text-sm">
               Your trusted marketplace for B2B IT & Software, connecting businesses with verified leads.
             </p>
@@ -71,19 +77,18 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-sm font-semibold tracking-wider uppercase">Quick Links</h3>
             <ul className="mt-4 space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white">About Us</a></li>
+              <li><button onClick={() => onNavigate('about')} className="text-gray-400 hover:text-white">About Us</button></li>
               <li><a href="#products" className="text-gray-400 hover:text-white">Product Catalog</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">For Vendors</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Contact Us</a></li>
+              <li><button onClick={() => onNavigate('contact')} className="text-gray-400 hover:text-white">Contact Us</button></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold tracking-wider uppercase">Legal</h3>
             <ul className="mt-4 space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Commission Policy</a></li>
+              <li><button onClick={() => onNavigate('privacy')} className="text-gray-400 hover:text-white">Privacy Policy</button></li>
+              <li><button onClick={() => onNavigate('terms')} className="text-gray-400 hover:text-white">Terms of Service</button></li>
+              <li><button onClick={() => onNavigate('commission')} className="text-gray-400 hover:text-white">Commission Policy</button></li>
             </ul>
           </div>
           

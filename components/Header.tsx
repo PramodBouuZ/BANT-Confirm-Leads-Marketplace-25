@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { Page } from '../App';
 
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -12,12 +14,16 @@ const CloseIcon = () => (
   </svg>
 );
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onNavigate: (page: Page) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: '#', label: 'About Us' },
-    { href: '#', label: 'Contact Us' },
+    { page: 'about' as Page, label: 'About Us' },
+    { page: 'contact' as Page, label: 'Contact Us' },
   ];
 
   return (
@@ -25,22 +31,22 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
-            <a href="#" className="text-2xl font-bold">
+            <button onClick={() => onNavigate('home')} className="text-2xl font-bold cursor-pointer">
               <span className="text-blue-600">BANT</span>
               <span className="text-yellow-400">Confirm</span>
-            </a>
+            </button>
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link, index) => (
-              <a 
+              <button
                 key={link.label} 
-                href={link.href} 
+                onClick={() => onNavigate(link.page)}
                 className="text-gray-600 hover:text-blue-600 font-medium transition-colors opacity-0 animate-fade-in-down"
                 style={{ animationDelay: `${100 * (index + 2)}ms`, animationFillMode: 'forwards' }}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
 
@@ -73,9 +79,9 @@ const Header: React.FC = () => {
         <div className="md:hidden bg-white border-t border-gray-200 animate-fade-in-down">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
-              <a key={link.label} href={link.href} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+              <button key={link.label} onClick={() => { onNavigate(link.page); setIsMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
                 {link.label}
-              </a>
+              </button>
             ))}
              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
               Login
