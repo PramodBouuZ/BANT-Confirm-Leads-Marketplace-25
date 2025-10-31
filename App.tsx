@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import EnquirySection from './components/EnquirySection';
@@ -17,6 +17,7 @@ import ProfilePage from './components/ProfilePage';
 import BantyAssistant from './components/BantyAssistant';
 import AdminLoginPage from './components/AdminLoginPage';
 import AdminDashboard from './components/AdminDashboard';
+import ProactiveAssistant from './components/ProactiveAssistant';
 
 export type Page = 'home' | 'about' | 'contact' | 'privacy' | 'terms' | 'commission' | 'profile' | 'adminLogin' | 'adminDashboard';
 
@@ -112,6 +113,14 @@ const App: React.FC = () => {
   const [vendors, setVendors] = useState<Vendor[]>(initialVendors);
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
 
+  // Proactive Assistant State
+  const [hasPostedEnquiry, setHasPostedEnquiry] = useState(false);
+  const [showProactiveAssistant, setShowProactiveAssistant] = useState(false);
+  const hasPostedEnquiryRef = useRef(hasPostedEnquiry);
+  useEffect(() => {
+      hasPostedEnquiryRef.current = hasPostedEnquiry;
+  }, [hasPostedEnquiry]);
+
   useEffect(() => {
     if (filteredProductsCount === 0 && searchTerm.trim() !== '') {
       setUnmatchedSearches(prev => {
@@ -123,6 +132,38 @@ const App: React.FC = () => {
       });
     }
   }, [filteredProductsCount, searchTerm]);
+
+  useEffect(() => {
+      // FIX: Replaced NodeJS.Timeout with number, which is the correct return type for setTimeout in a browser environment.
+      let timerId: number | null = null;
+      let hasScrolledPastThreshold = false;
+
+      const handleScroll = () => {
+          if (window.scrollY > 200) { // A reasonable scroll depth to indicate engagement
+              hasScrolledPastThreshold = true;
+              window.removeEventListener('scroll', handleScroll); // Remove after triggering to prevent re-checks
+          }
+      };
+      
+      // This logic is only for the home page for non-logged-in-admins
+      if (currentPage === 'home' && !isAdminLoggedIn) {
+          window.addEventListener('scroll', handleScroll, { passive: true });
+
+          timerId = window.setTimeout(() => {
+              if (hasScrolledPastThreshold && !hasPostedEnquiryRef.current) {
+                  setShowProactiveAssistant(true);
+              }
+          }, 20000); // 20 seconds
+      }
+
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+          if (timerId) {
+              clearTimeout(timerId);
+          }
+      };
+
+  }, [currentPage, isAdminLoggedIn]);
 
   const navigate = (page: Page) => {
     setCurrentPage(page);
@@ -173,6 +214,8 @@ const App: React.FC = () => {
   };
 
   const handleNewEnquiry = (enquiryData: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation'>) => {
+      setHasPostedEnquiry(true);
+      setShowProactiveAssistant(false);
       const newEnquiry: Enquiry = {
           ...enquiryData,
           id: Date.now(),
@@ -249,6 +292,16 @@ const App: React.FC = () => {
               filteredProductsCount={filteredProductsCount}
               onCantFind={() => handleEnquiryPrefill("I was looking for a specific solution but couldn't find it. Can you help me?")}
             />
+            {showProactiveAssistant && (
+                <ProactiveAssistant
+                    user={user}
+                    onHelpClick={() => {
+                        handleEnquiryPrefill("I was looking for a solution but couldn't find it. Can you help me?");
+                        setShowProactiveAssistant(false);
+                    }}
+                    onClose={() => setShowProactiveAssistant(false)}
+                />
+            )}
           </>
         );
     }
