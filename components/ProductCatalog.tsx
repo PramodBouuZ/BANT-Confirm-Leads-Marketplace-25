@@ -207,8 +207,8 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searc
   return (
     <section id="products" className="py-16 bg-gray-100 overflow-hidden animate-fade-in-up">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-4">Enterprise-Ready IT & Software Solutions</h2>
-        <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">Browse our curated catalog of software for businesses of all sizes, from startups to enterprise-level companies. The perfect tools for your IT and technical teams.</p>
+        <h2 className="text-2xl font-bold text-center mb-4">Search by products</h2>
+        <p className="text-sm text-gray-500 text-center mb-8 max-w-2xl mx-auto">Browse our curated catalog of software for businesses of all sizes, from startups to enterprise-level companies. The perfect tools for your IT and technical teams.</p>
         
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">

@@ -87,7 +87,7 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
     <section id="enquiry-section" className="py-12 bg-white animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Post Your Business or Customer Requirement</h2>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">Whether you're a business owner, an IT professional sourcing solutions, or a sales professional posting for a client, get matched with top-tier vendors. It's fast, free, and rewarding.</p>
+        <p className="text-sm text-gray-500 mb-6 max-w-2xl mx-auto">Whether you're a business owner, an IT professional sourcing solutions, or a sales professional posting for a client, get matched with top-tier vendors. It's fast, free, and rewarding.</p>
         <div className="max-w-3xl mx-auto bg-gray-100 rounded-lg shadow-inner min-h-[150px] p-4 sm:p-6 transition-transform duration-300 hover:scale-[1.02]">
           {isSubmitted ? (
             <div className="text-center animate-fade-in">
