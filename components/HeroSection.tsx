@@ -1,37 +1,31 @@
+
 import React, { useState, useEffect } from 'react';
+import { Banner } from '../App';
 
-const banners = [
-  {
-    id: 1,
-    image: 'https://picsum.photos/1200/500?random=1',
-  },
-  {
-    id: 2,
-    image: 'https://picsum.photos/1200/500?random=2',
-  },
-  {
-    id: 3,
-    image: 'https://picsum.photos/1200/500?random=3',
-  },
-  {
-    id: 4,
-    image: 'https://picsum.photos/1200/500?random=4',
-  },
-  {
-    id: 5,
-    image: 'https://picsum.photos/1200/500?random=5',
-  },
-];
+interface HeroSectionProps {
+    banners: Banner[];
+}
 
-const HeroSection: React.FC = () => {
+const HeroSection: React.FC<HeroSectionProps> = ({ banners }) => {
   const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
+    if (banners.length === 0) return;
     const timer = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [banners.length]);
+
+  if (banners.length === 0) {
+      return (
+        <section className="relative bg-gray-900 text-white overflow-hidden">
+            <div className="relative h-64 md:h-96 w-full flex items-center justify-center bg-gray-800">
+                <p>No banners available.</p>
+            </div>
+        </section>
+      )
+  }
 
   return (
     <section className="relative bg-gray-900 text-white overflow-hidden">

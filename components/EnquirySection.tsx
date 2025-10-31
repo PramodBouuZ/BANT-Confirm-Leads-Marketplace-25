@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Enquiry } from '../App';
 
 const CheckmarkIcon = () => (
     <svg className="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -11,17 +12,12 @@ interface EnquirySectionProps {
     isLoggedIn: boolean;
     prefilledEnquiry: string;
     clearPrefilledEnquiry: () => void;
+    onNewEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail'>) => void;
 }
 
-interface FormData {
-    enquiryText: string;
-    budget: string;
-    authority: string;
-    need: string;
-    timeline: string;
-}
+type FormData = Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'assignedVendor'>;
 
-const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry }) => {
+const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry, onNewEnquiry }) => {
   const [formData, setFormData] = useState<FormData>({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});
   const [error, setError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -67,7 +63,7 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
         return;
     }
 
-    console.log('Submitting enquiry:', formData);
+    onNewEnquiry(formData);
     sendConfirmationEmail(formData);
 
     setIsSubmitted(true);

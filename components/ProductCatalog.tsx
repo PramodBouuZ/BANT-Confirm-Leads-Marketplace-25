@@ -1,72 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  vendor: string;
-  price: string;
-  features: string[];
-  imageUrl: string;
-}
-
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: 'ProCRM Suite',
-    category: 'CRM Software',
-    vendor: 'SalesForce',
-    price: '₹3,999/user/month',
-    features: ['Lead Management', 'Sales Automation', 'Analytics Dashboard'],
-    imageUrl: 'https://picsum.photos/400/300?random=11',
-  },
-  {
-    id: 2,
-    name: 'CloudERP Enterprise',
-    category: 'ERP Solution',
-    vendor: 'Oracle',
-    price: 'Custom Pricing',
-    features: ['Finance & Accounting', 'Inventory Control', 'HR Management'],
-    imageUrl: 'https://picsum.photos/400/300?random=12',
-  },
-  {
-    id: 3,
-    name: 'CyberGuard Security',
-    category: 'Cybersecurity',
-    vendor: 'McAfee',
-    price: '₹79,999/year',
-    features: ['Threat Detection', 'Firewall Protection', 'Endpoint Security'],
-    imageUrl: 'https://picsum.photos/400/300?random=13',
-  },
-  {
-    id: 4,
-    name: 'DataVizz Pro',
-    category: 'Business Intelligence',
-    vendor: 'Tableau',
-    price: '₹5,800/user/month',
-    features: ['Interactive Dashboards', 'Data Visualization', 'Predictive Analytics'],
-    imageUrl: 'https://picsum.photos/400/300?random=14',
-  },
-  {
-    id: 5,
-    name: 'ConnectFlow HRMS',
-    category: 'HR Software',
-    vendor: 'Zoho',
-    price: '₹650/employee/month',
-    features: ['Payroll Processing', 'Attendance Tracking', 'Performance Review'],
-    imageUrl: 'https://picsum.photos/400/300?random=15',
-  },
-  {
-    id: 6,
-    name: 'AgileSprint Project Mgmt',
-    category: 'Project Management',
-    vendor: 'Atlassian',
-    price: 'Free Tier Available',
-    features: ['Kanban Boards', 'Gantt Charts', 'Time Tracking'],
-    imageUrl: 'https://picsum.photos/400/300?random=16',
-  },
-];
+import { Product } from '../App';
 
 const featureDescriptions: { [key: string]: string } = {
   'Lead Management': 'Track and manage potential customers from initial contact to final sale.',
@@ -97,6 +31,7 @@ const parsePrice = (priceStr: string): number => {
 };
 
 interface ProductCatalogProps {
+  products: Product[];
   onEnquiryPrefill: (text: string) => void;
   searchTerm: string;
   onSearchTermChange: (term: string) => void;
@@ -143,21 +78,25 @@ const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEn
   </div>
 );
 
-const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searchTerm, onSearchTermChange, onFilterChange, isLoggedIn }) => {
+const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, onEnquiryPrefill, searchTerm, onSearchTermChange, onFilterChange, isLoggedIn }) => {
   const uniqueFeatures = useMemo(() => {
     const allFeatures = new Set<string>();
-    mockProducts.forEach(p => p.features.forEach(f => allFeatures.add(f)));
+    products.forEach(p => p.features.forEach(f => allFeatures.add(f)));
     return Array.from(allFeatures).sort();
-  }, []);
+  }, [products]);
 
   const maxPrice = useMemo(() => {
     return Math.max(
-        ...mockProducts.map(p => parsePrice(p.price)).filter(p => p !== -1)
+        ...products.map(p => parsePrice(p.price)).filter(p => p !== -1)
     );
-  }, []);
+  }, [products]);
 
   const [priceRange, setPriceRange] = useState<number>(maxPrice);
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+
+  useEffect(() => {
+    setPriceRange(maxPrice);
+  }, [maxPrice]);
 
   const handleFeatureChange = (feature: string) => {
     setSelectedFeatures(prev =>
@@ -178,7 +117,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searc
   };
 
   const filteredProducts = useMemo(() => {
-    return mockProducts.filter(product => {
+    return products.filter(product => {
       const matchesSearchTerm = searchTerm === '' ||
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -196,7 +135,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searc
 
       return true;
     });
-  }, [searchTerm, priceRange, selectedFeatures]);
+  }, [searchTerm, priceRange, selectedFeatures, products]);
 
   useEffect(() => {
     if (onFilterChange) {
