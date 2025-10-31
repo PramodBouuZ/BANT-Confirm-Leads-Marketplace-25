@@ -7,12 +7,6 @@ const vendors = [
   'https://logo.clearbit.com/sap.com',
   'https://logo.clearbit.com/adobe.com',
   'https://logo.clearbit.com/ibm.com',
-  'https://logo.clearbit.com/cisco.com',
-  'https://logo.clearbit.com/vmware.com',
-  'https://logo.clearbit.com/zoho.com',
-  'https://logo.clearbit.com/hubspot.com',
-  'https://logo.clearbit.com/atlassian.com',
-  'https://logo.clearbit.com/intuit.com',
 ];
 
 const VendorSection: React.FC = () => {

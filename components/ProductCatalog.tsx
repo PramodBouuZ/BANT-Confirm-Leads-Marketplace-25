@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+
+import React, { useState, useMemo, useEffect } from 'react';
 
 interface Product {
   id: number;
@@ -67,7 +68,14 @@ const parsePrice = (priceStr: string): number => {
   return match ? parseInt(match[1].replace(/,/g, ''), 10) : -1;
 };
 
-const ProductCard: React.FC<{ product: Product, animationDelay: string }> = ({ product, animationDelay }) => (
+interface ProductCatalogProps {
+  onEnquiryPrefill: (text: string) => void;
+  searchTerm: string;
+  onSearchTermChange: (term: string) => void;
+  onFilterChange: (count: number) => void;
+}
+
+const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEnquiry: () => void, onScheduleDemo: () => void }> = ({ product, animationDelay, onPostEnquiry, onScheduleDemo }) => (
   <div 
     className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 opacity-0 animate-zoom-in"
     style={{ animationDelay, animationFillMode: 'forwards' }}
@@ -83,10 +91,10 @@ const ProductCard: React.FC<{ product: Product, animationDelay: string }> = ({ p
         ))}
       </ul>
       <div className="flex flex-col sm:flex-row gap-2">
-        <button className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">
+        <button onClick={onPostEnquiry} className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">
           Post Enquiry
         </button>
-        <button className="w-full bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 transition">
+        <button onClick={onScheduleDemo} className="w-full bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 transition">
           Schedule Demo
         </button>
       </div>
@@ -94,9 +102,7 @@ const ProductCard: React.FC<{ product: Product, animationDelay: string }> = ({ p
   </div>
 );
 
-const ProductCatalog: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-
+const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searchTerm, onSearchTermChange, onFilterChange }) => {
   const uniqueFeatures = useMemo(() => {
     const allFeatures = new Set<string>();
     mockProducts.forEach(p => p.features.forEach(f => allFeatures.add(f)));
@@ -120,6 +126,16 @@ const ProductCatalog: React.FC = () => {
     );
   };
 
+  const handlePostEnquiry = (productName: string) => {
+    onEnquiryPrefill(`I'm interested in ${productName}. Please provide more details.`);
+    document.getElementById('enquiry-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleScheduleDemo = (productName: string) => {
+    onEnquiryPrefill(`I would like to schedule a demo for ${productName}.`);
+    document.getElementById('enquiry-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const filteredProducts = useMemo(() => {
     return mockProducts.filter(product => {
       const matchesSearchTerm = searchTerm === '' ||
@@ -141,27 +157,33 @@ const ProductCatalog: React.FC = () => {
     });
   }, [searchTerm, priceRange, selectedFeatures]);
 
+  useEffect(() => {
+    if (onFilterChange) {
+      onFilterChange(filteredProducts.length);
+    }
+  }, [filteredProducts, onFilterChange]);
+
   return (
     <section id="products" className="py-16 bg-gray-100 overflow-hidden animate-fade-in-up">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-4">Explore Our Product Catalog</h2>
         <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">Find the right software and IT solutions for your business needs.</p>
         
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in-left">
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 opacity-0 animate-fade-in-left" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
                     <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-1">Search Products</label>
                     <input
                         id="search-input"
                         type="text"
                         placeholder="Search by name, category, or feature..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => onSearchTermChange(e.target.value)}
                         className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                 </div>
 
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 opacity-0 animate-fade-in-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
                     <label htmlFor="price-range" className="block text-sm font-medium text-gray-700 mb-1">
                         Max Price: <span className="font-bold text-blue-600">₹{priceRange.toLocaleString('en-IN')}</span>
                     </label>
@@ -176,27 +198,29 @@ const ProductCatalog: React.FC = () => {
                     />
                 </div>
 
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 opacity-0 animate-fade-in-right" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
                     <details className="group">
                         <summary className="flex justify-between items-center text-sm font-medium text-gray-700 cursor-pointer list-none -mb-2 group-open:mb-2">
                             <span>Filter by Features</span>
                             <svg className="w-5 h-5 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                         </summary>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 pt-2">
-                            {uniqueFeatures.map(feature => (
-                                <div key={feature} className="flex items-center">
-                                    <input
-                                        id={`feature-${feature}`}
-                                        type="checkbox"
-                                        checked={selectedFeatures.includes(feature)}
-                                        onChange={() => handleFeatureChange(feature)}
-                                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    <label htmlFor={`feature-${feature}`} className="ml-2 text-sm text-gray-600">
-                                        {feature}
-                                    </label>
-                                </div>
-                            ))}
+                        <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-0 group-open:max-h-96">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 pt-2">
+                                {uniqueFeatures.map(feature => (
+                                    <div key={feature} className="flex items-center">
+                                        <input
+                                            id={`feature-${feature}`}
+                                            type="checkbox"
+                                            checked={selectedFeatures.includes(feature)}
+                                            onChange={() => handleFeatureChange(feature)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        <label htmlFor={`feature-${feature}`} className="ml-2 text-sm text-gray-600">
+                                            {feature}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </details>
                 </div>
@@ -205,11 +229,34 @@ const ProductCatalog: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} animationDelay={`${100 * (index % 3)}ms`} />
+            <ProductCard 
+                key={product.id} 
+                product={product} 
+                animationDelay={`${100 * (index % 3)}ms`} 
+                onPostEnquiry={() => handlePostEnquiry(product.name)}
+                onScheduleDemo={() => handleScheduleDemo(product.name)}
+            />
           ))}
         </div>
         {filteredProducts.length === 0 && (
-          <p className="text-center text-gray-500 mt-8 animate-fade-in">No products found matching your search criteria.</p>
+          <div className="text-center text-gray-600 mt-8 p-8 bg-white rounded-lg shadow-md animate-fade-in">
+            <h3 className="text-xl font-semibold text-gray-800">No Products Found</h3>
+            {searchTerm ? (
+              <p className="mt-2">We couldn't find any products matching your search for "{searchTerm}".</p>
+            ) : (
+              <p className="mt-2">No products match the current filter criteria.</p>
+            )}
+            <p className="mt-4">
+              Can't find what you're looking for?{' '}
+              <button 
+                onClick={() => onEnquiryPrefill(searchTerm ? `I searched for "${searchTerm}" but couldn't find a matching solution.` : `I couldn't find a suitable product.`)} 
+                className="font-medium text-blue-600 hover:underline"
+              >
+                Post an enquiry
+              </button>
+              {' '} and our team will help you.
+            </p>
+          </div>
         )}
       </div>
     </section>
