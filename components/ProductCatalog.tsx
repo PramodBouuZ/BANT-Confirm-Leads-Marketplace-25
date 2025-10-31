@@ -61,6 +61,27 @@ const mockProducts: Product[] = [
   },
 ];
 
+const featureDescriptions: { [key: string]: string } = {
+  'Lead Management': 'Track and manage potential customers from initial contact to final sale.',
+  'Sales Automation': 'Automate repetitive sales tasks like follow-up emails and data entry.',
+  'Analytics Dashboard': 'Visualize your sales data with customizable charts and reports to gain actionable insights.',
+  'Finance & Accounting': 'Manage your company\'s financial data, including ledgers, payables, receivables, and reporting.',
+  'Inventory Control': 'Monitor stock levels, track orders, and manage the entire inventory lifecycle.',
+  'HR Management': 'Streamline HR processes from payroll and benefits to performance and recruiting.',
+  'Threat Detection': 'Proactively identify and respond to potential cybersecurity threats in real-time.',
+  'Firewall Protection': 'Create a secure barrier between your internal network and untrusted external networks.',
+  'Endpoint Security': 'Secure laptops, desktops, and mobile devices from malware and cyberattacks.',
+  'Interactive Dashboards': 'Create dynamic, clickable reports that allow users to explore data visually.',
+  'Data Visualization': 'Transform raw data into easily understandable graphs and charts.',
+  'Predictive Analytics': 'Use historical data and machine learning to predict future trends and outcomes.',
+  'Payroll Processing': 'Automate employee salary calculation, tax deductions, and payment disbursement.',
+  'Attendance Tracking': 'Digitally monitor employee work hours, breaks, and time off.',
+  'Performance Review': 'Set goals, gather feedback, and conduct employee performance evaluations systematically.',
+  'Kanban Boards': 'Visualize workflows and track task progress through different stages.',
+  'Gantt Charts': 'Plan and schedule projects over time, showing dependencies between tasks.',
+  'Time Tracking': 'Record time spent on tasks and projects for accurate billing and productivity analysis.',
+};
+
 const parsePrice = (priceStr: string): number => {
   if (priceStr.toLowerCase().includes('free')) return 0;
   if (priceStr.toLowerCase().includes('custom')) return -1; // Special value for custom pricing
@@ -87,7 +108,18 @@ const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEn
       <p className="text-lg font-semibold text-blue-600 mb-4">{product.price}</p>
       <ul className="text-sm text-gray-600 space-y-1 mb-6 list-disc list-inside">
         {product.features.map((feature) => (
-          <li key={feature}>{feature}</li>
+          <li key={feature} className="relative group cursor-help">
+            {feature}
+            {featureDescriptions[feature] && (
+              <div 
+                role="tooltip"
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 shadow-lg"
+              >
+                {featureDescriptions[feature]}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-800"></div>
+              </div>
+            )}
+          </li>
         ))}
       </ul>
       <div className="flex flex-col sm:flex-row gap-2">

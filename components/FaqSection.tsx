@@ -40,10 +40,12 @@ const FaqSection: React.FC = () => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </span>
               </summary>
-              <div className="overflow-hidden max-h-0 group-open:max-h-screen transition-all duration-500 ease-in-out">
-                <p className="mt-4 text-gray-600">
-                  {faq.answer}
-                </p>
+              <div className="grid grid-rows-[0fr] group-open:grid-rows-[1fr] transition-[grid-template-rows] duration-400 ease-in-out">
+                <div className="overflow-hidden">
+                  <p className="mt-4 text-gray-600 opacity-0 group-open:opacity-100 transition-opacity duration-300 delay-150 ease-in-out">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
             </details>
           ))}

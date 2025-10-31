@@ -100,7 +100,7 @@ const ContactUsPage: React.FC = () => {
                     </div>
                     <div className="ml-4">
                         <p className="text-lg font-semibold text-gray-800">Address</p>
-                        <p className="text-gray-500">123 Tech Park, Innovation Hub, Bengaluru, India</p>
+                        <p className="text-gray-500">Noida, Uttar Pradesh 201301</p>
                     </div>
                 </div>
                 <div className="flex items-start">
@@ -109,7 +109,7 @@ const ContactUsPage: React.FC = () => {
                     </div>
                     <div className="ml-4">
                         <p className="text-lg font-semibold text-gray-800">Email</p>
-                        <p className="text-gray-500">support@bantconfirm.com</p>
+                        <p className="text-gray-500">Info@bantconfirm.com</p>
                     </div>
                 </div>
                 <div className="flex items-start">
@@ -118,7 +118,7 @@ const ContactUsPage: React.FC = () => {
                     </div>
                     <div className="ml-4">
                         <p className="text-lg font-semibold text-gray-800">Phone</p>
-                        <p className="text-gray-500">+91 80 1234 5678</p>
+                        <p className="text-gray-500">+91-9310269821</p>
                     </div>
                 </div>
             </div>
