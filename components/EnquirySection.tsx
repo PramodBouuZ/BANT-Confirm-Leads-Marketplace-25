@@ -86,8 +86,8 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
   return (
     <section id="enquiry-section" className="py-12 bg-white animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">Have an IT or Software Requirement?</h2>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">Post your needs below and get matched with top vendors. It's fast, free, and you could earn a commission!</p>
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">Post Your Business or Customer Requirement</h2>
+        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">Whether you're a business owner, an IT professional sourcing solutions, or a sales professional posting for a client, get matched with top-tier vendors. It's fast, free, and rewarding.</p>
         <div className="max-w-3xl mx-auto bg-gray-100 rounded-lg shadow-inner min-h-[150px] p-4 sm:p-6 transition-transform duration-300 hover:scale-[1.02]">
           {isSubmitted ? (
             <div className="text-center animate-fade-in">
@@ -111,7 +111,7 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
                         onChange={handleChange}
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                         rows={3}
-                        placeholder="Describe your requirement in detail. Or, select a product below to start."
+                        placeholder="Describe your company's or customer's requirement in detail..."
                         aria-invalid={!!error}
                         aria-describedby="enquiry-error"
                     ></textarea>

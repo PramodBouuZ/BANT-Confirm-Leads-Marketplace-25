@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const faqs = [
@@ -12,6 +13,14 @@ const faqs = [
   {
     question: "How can I earn money by posting an enquiry?",
     answer: "If you post a genuine requirement that leads to a successful deal between you and one of our vendors, you are eligible for a commission of up to 10% of the deal value. This is our way of thanking you for bringing business to the platform."
+  },
+  {
+    question: "I'm a sales professional. Can I post an enquiry for my customer?",
+    answer: "Absolutely! We encourage sales professionals and consultants to post enquiries on behalf of their clients for requirements that fall outside their company's portfolio. It's a powerful way to assist your customer while ensuring a qualified lead isn't lost. If your submitted enquiry results in a successful deal, you are eligible to receive up to 10% commission, as detailed in our Commission Policy. It's a win-win: your customer finds a trusted solution, and you are rewarded for the connection."
+  },
+   {
+    question: "I'm a developer/IT manager. Can I find technical or enterprise-level solutions here?",
+    answer: "Yes. Our platform is designed for technical and IT teams. You can find a wide range of enterprise-grade solutions, from cybersecurity and cloud infrastructure to developer tools and complex ERP systems. Post a detailed technical enquiry to get matched with vendors who understand your specific needs."
   },
   {
     question: "Is it free to post an enquiry?",

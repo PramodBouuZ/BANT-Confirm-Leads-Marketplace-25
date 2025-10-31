@@ -1,6 +1,6 @@
 {
   "name": "BANT Confirm Leads Marketplace 25",
-  "description": "A B2B IT & Software Marketplace that provides BANT (Budget, Authority, Need, Timeline) confirmed leads to vendors. Customers can post enquiries and vendors can manage their products and leads.",
+  "description": "BANT Confirm is a premier B2B IT & Software Marketplace for business owners, IT teams, and sales professionals. Find enterprise-grade solutions, post enquiries for your company, and get BANT-confirmed leads. The ideal platform for end-users, developers, and technical teams to discover top-tier software and services.",
   "requestFramePermissions": [
     "microphone"
   ]

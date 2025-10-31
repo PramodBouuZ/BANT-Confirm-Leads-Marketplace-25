@@ -70,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="text-yellow-400">Confirm</span>
             </button>
             <p className="mt-4 text-gray-400 text-sm">
-              Your trusted marketplace for B2B IT & Software, connecting businesses with verified leads.
+              Your trusted B2B marketplace for IT & Software, connecting businesses, IT teams, and sales professionals with enterprise-ready solutions and BANT-verified leads.
             </p>
           </div>
 

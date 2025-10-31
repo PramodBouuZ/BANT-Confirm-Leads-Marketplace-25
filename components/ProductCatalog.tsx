@@ -5,6 +5,7 @@ interface Product {
   id: number;
   name: string;
   category: string;
+  vendor: string;
   price: string;
   features: string[];
   imageUrl: string;
@@ -15,6 +16,7 @@ const mockProducts: Product[] = [
     id: 1,
     name: 'ProCRM Suite',
     category: 'CRM Software',
+    vendor: 'SalesForce',
     price: '₹3,999/user/month',
     features: ['Lead Management', 'Sales Automation', 'Analytics Dashboard'],
     imageUrl: 'https://picsum.photos/400/300?random=11',
@@ -23,6 +25,7 @@ const mockProducts: Product[] = [
     id: 2,
     name: 'CloudERP Enterprise',
     category: 'ERP Solution',
+    vendor: 'Oracle',
     price: 'Custom Pricing',
     features: ['Finance & Accounting', 'Inventory Control', 'HR Management'],
     imageUrl: 'https://picsum.photos/400/300?random=12',
@@ -31,6 +34,7 @@ const mockProducts: Product[] = [
     id: 3,
     name: 'CyberGuard Security',
     category: 'Cybersecurity',
+    vendor: 'McAfee',
     price: '₹79,999/year',
     features: ['Threat Detection', 'Firewall Protection', 'Endpoint Security'],
     imageUrl: 'https://picsum.photos/400/300?random=13',
@@ -39,6 +43,7 @@ const mockProducts: Product[] = [
     id: 4,
     name: 'DataVizz Pro',
     category: 'Business Intelligence',
+    vendor: 'Tableau',
     price: '₹5,800/user/month',
     features: ['Interactive Dashboards', 'Data Visualization', 'Predictive Analytics'],
     imageUrl: 'https://picsum.photos/400/300?random=14',
@@ -47,6 +52,7 @@ const mockProducts: Product[] = [
     id: 5,
     name: 'ConnectFlow HRMS',
     category: 'HR Software',
+    vendor: 'Zoho',
     price: '₹650/employee/month',
     features: ['Payroll Processing', 'Attendance Tracking', 'Performance Review'],
     imageUrl: 'https://picsum.photos/400/300?random=15',
@@ -55,6 +61,7 @@ const mockProducts: Product[] = [
     id: 6,
     name: 'AgileSprint Project Mgmt',
     category: 'Project Management',
+    vendor: 'Atlassian',
     price: 'Free Tier Available',
     features: ['Kanban Boards', 'Gantt Charts', 'Time Tracking'],
     imageUrl: 'https://picsum.photos/400/300?random=16',
@@ -94,16 +101,18 @@ interface ProductCatalogProps {
   searchTerm: string;
   onSearchTermChange: (term: string) => void;
   onFilterChange: (count: number) => void;
+  isLoggedIn: boolean;
 }
 
-const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEnquiry: () => void, onScheduleDemo: () => void }> = ({ product, animationDelay, onPostEnquiry, onScheduleDemo }) => (
+const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEnquiry: () => void, onScheduleDemo: () => void, isLoggedIn: boolean }> = ({ product, animationDelay, onPostEnquiry, onScheduleDemo, isLoggedIn }) => (
   <div 
-    className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 opacity-0 animate-zoom-in"
+    className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 hover:scale-105 transition-transform duration-300 opacity-0 animate-zoom-in"
     style={{ animationDelay, animationFillMode: 'forwards' }}
   >
     <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover" />
     <div className="p-6">
       <h3 className="text-xl font-bold text-gray-800">{product.name}</h3>
+      {isLoggedIn && <p className="text-xs text-gray-400 italic -mt-1 mb-2">by {product.vendor}</p>}
       <p className="text-sm text-gray-500 mb-2">{product.category}</p>
       <p className="text-lg font-semibold text-blue-600 mb-4">{product.price}</p>
       <ul className="text-sm text-gray-600 space-y-1 mb-6 list-disc list-inside">
@@ -134,7 +143,7 @@ const ProductCard: React.FC<{ product: Product, animationDelay: string, onPostEn
   </div>
 );
 
-const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searchTerm, onSearchTermChange, onFilterChange }) => {
+const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searchTerm, onSearchTermChange, onFilterChange, isLoggedIn }) => {
   const uniqueFeatures = useMemo(() => {
     const allFeatures = new Set<string>();
     mockProducts.forEach(p => p.features.forEach(f => allFeatures.add(f)));
@@ -198,8 +207,8 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searc
   return (
     <section id="products" className="py-16 bg-gray-100 overflow-hidden animate-fade-in-up">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-4">Explore Our Product Catalog</h2>
-        <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">Find the right software and IT solutions for your business needs.</p>
+        <h2 className="text-3xl font-bold text-center mb-4">Enterprise-Ready IT & Software Solutions</h2>
+        <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">Browse our curated catalog of software for businesses of all sizes, from startups to enterprise-level companies. The perfect tools for your IT and technical teams.</p>
         
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -264,6 +273,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onEnquiryPrefill, searc
             <ProductCard 
                 key={product.id} 
                 product={product} 
+                isLoggedIn={isLoggedIn}
                 animationDelay={`${100 * (index % 3)}ms`} 
                 onPostEnquiry={() => handlePostEnquiry(product.name)}
                 onScheduleDemo={() => handleScheduleDemo(product.name)}

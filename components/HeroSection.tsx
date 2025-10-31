@@ -62,12 +62,15 @@ const HeroSection: React.FC = () => {
       <div className="bg-yellow-400 text-blue-900 py-3 overflow-hidden">
         <div className="animate-scroll-text whitespace-nowrap">
             <span className="font-bold text-lg mx-8">
-                Post your enquiry and get up to 10% commission on deal value
+                For Business Owners: Find vetted IT solutions and grow your company.
             </span>
             <span className="font-bold text-lg mx-8">
-                Post your enquiry and get up to 10% commission on deal value
+                For Sales Professionals: Earn up to 10% commission on converted customer leads.
             </span>
             <span className="font-bold text-lg mx-8">
+                For IT Teams: Discover enterprise-grade software and services for your technical needs.
+            </span>
+             <span className="font-bold text-lg mx-8">
                 Post your enquiry and get up to 10% commission on deal value
             </span>
         </div>

@@ -27,7 +27,7 @@ const AboutUsPage: React.FC = () => {
             <div className="mt-12 lg:mt-0 animate-fade-in-left">
               <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Our Story</h2>
               <p className="mt-4 text-lg text-gray-500">
-                In the bustling world of B2B technology, we saw a recurring problem: a disconnect. Buyers struggled to find solutions that fit their precise needs, while vendors wasted resources chasing unqualified leads. BANT Confirm was born from a simple idea: what if we could build a marketplace that valued quality over quantity? A platform that did the groundwork to ensure every connection was meaningful, efficient, and poised for success.
+                In the bustling world of B2B technology, we saw a recurring problem: a disconnect. Business owners and IT teams struggled to find solutions that fit their precise needs, while vendors wasted resources chasing unqualified leads. BANT Confirm was born from a simple idea: what if we could build a marketplace that valued quality over quantity? A platform for every user—from the end-user to the company owner—that did the groundwork to ensure every connection was meaningful, efficient, and poised for success.
               </p>
             </div>
           </div>
@@ -38,22 +38,29 @@ const AboutUsPage: React.FC = () => {
                 <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                     <h3 className="text-2xl font-bold text-blue-600">Our Mission</h3>
                     <p className="mt-3 text-lg text-gray-500">
-                        To empower businesses by creating the most efficient and trustworthy B2B marketplace. We are committed to streamlining the tech procurement process for buyers and delivering high-intent, BANT-qualified leads to vendors, fostering a community built on transparency and mutual growth.
+                        To empower businesses by creating the most efficient and trustworthy B2B marketplace. We are committed to streamlining the tech procurement process for buyers and delivering high-intent, BANT-qualified leads to vendors, fostering a community built on transparency and mutual growth for every company.
                     </p>
                 </div>
                 <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
                     <h3 className="text-2xl font-bold text-yellow-500">Our Vision</h3>
                     <p className="mt-3 text-lg text-gray-500">
-                        To be the definitive global platform where every B2B technology transaction begins. We envision a future where finding the right software or IT solution is a seamless, intelligent, and rewarding experience for every business, from startup to enterprise.
+                        To be the definitive global platform where every B2B technology transaction begins. We envision a future where finding the right software or IT solution is a seamless, intelligent, and rewarding experience for every business, from startup to enterprise-level company.
                     </p>
                 </div>
             </div>
         </div>
 
+        <div className="mt-24 text-center bg-blue-50 rounded-lg p-12 animate-fade-in-up">
+             <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">For Sales Professionals & Partners</h2>
+             <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                Are you a sales professional or consultant with a customer requirement that falls outside your current company's product portfolio? Don't let a valuable lead for an end-user go to waste. Post your customer's enquiry on BANT Confirm. If the lead converts into a successful sale with one of our vendors, you can earn up to a 10% commission. Turn your network into an opportunity and ensure your client finds the best solution for their business.
+             </p>
+        </div>
+        
         <div className="mt-24 text-center">
              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight animate-fade-in-up">The BANT Advantage</h2>
              <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-                We pre-qualify every lead across four key pillars to ensure you only engage in meaningful conversations.
+                We pre-qualify every lead across four key pillars to ensure business owners, sales professionals, and enterprise companies only engage in meaningful conversations.
              </p>
              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {['Budget', 'Authority', 'Need', 'Timeline'].map((item, index) => (

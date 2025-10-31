@@ -103,6 +103,7 @@ const App: React.FC = () => {
               clearPrefilledEnquiry={clearPrefilledEnquiry}
             />
             <ProductCatalog
+              isLoggedIn={isLoggedIn}
               onEnquiryPrefill={handleEnquiryPrefill}
               searchTerm={searchTerm}
               onSearchTermChange={setSearchTerm}
