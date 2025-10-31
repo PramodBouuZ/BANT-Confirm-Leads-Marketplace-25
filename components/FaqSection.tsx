@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const faqs = [
@@ -26,21 +25,26 @@ const faqs = [
 
 const FaqSection: React.FC = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white overflow-hidden animate-fade-in-up">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
         <div className="max-w-3xl mx-auto space-y-4">
           {faqs.map((faq, index) => (
-            <details key={index} className="group bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer">
+            <details 
+              key={index} 
+              className="group bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer"
+            >
               <summary className="flex justify-between items-center font-medium text-gray-800 list-none group-hover:text-blue-600">
                 {faq.question}
-                <span className="transform group-open:rotate-180 transition-transform">
+                <span className="transform group-open:rotate-180 transition-transform duration-300">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </span>
               </summary>
-              <p className="mt-4 text-gray-600">
-                {faq.answer}
-              </p>
+              <div className="overflow-hidden max-h-0 group-open:max-h-screen transition-all duration-500 ease-in-out">
+                <p className="mt-4 text-gray-600">
+                  {faq.answer}
+                </p>
+              </div>
             </details>
           ))}
         </div>

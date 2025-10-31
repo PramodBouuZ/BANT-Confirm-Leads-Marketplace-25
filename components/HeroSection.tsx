@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const banners = [
@@ -45,8 +44,8 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative bg-gray-900 text-white">
-      <div className="relative h-64 md:h-96 w-full overflow-hidden">
+    <section className="relative bg-gray-900 text-white overflow-hidden">
+      <div className="relative h-64 md:h-96 w-full">
         {banners.map((banner, index) => (
           <div
             key={banner.id}
@@ -54,8 +53,12 @@ const HeroSection: React.FC = () => {
           >
             <img src={banner.image} alt={`Banner ${banner.id}`} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-center p-4">
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">{banner.title}</h1>
-              <p className="mt-2 md:mt-4 text-sm md:text-lg lg:text-xl">{banner.subtitle}</p>
+               {index === currentBanner && (
+                 <div key={currentBanner} className="animate-fade-in-up">
+                    <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">{banner.title}</h1>
+                    <p className="mt-2 md:mt-4 text-sm md:text-lg lg:text-xl">{banner.subtitle}</p>
+                 </div>
+               )}
             </div>
           </div>
         ))}

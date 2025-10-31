@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 const MenuIcon = () => (
@@ -21,13 +20,8 @@ const Header: React.FC = () => {
     { href: '#', label: 'Contact Us' },
   ];
 
-  const authLinks = [
-    { href: '#', label: 'Login', primary: false },
-    { href: '#', label: 'Sign-up', primary: true },
-  ];
-
   return (
-    <header className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+    <header className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50 animate-fade-in-down" style={{ animationFillMode: 'forwards' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
@@ -38,18 +32,31 @@ const Header: React.FC = () => {
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <a key={link.label} href={link.href} className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+            {navLinks.map((link, index) => (
+              <a 
+                key={link.label} 
+                href={link.href} 
+                className="text-gray-600 hover:text-blue-600 font-medium transition-colors opacity-0 animate-fade-in-down"
+                style={{ animationDelay: `${100 * (index + 2)}ms`, animationFillMode: 'forwards' }}
+              >
                 {link.label}
               </a>
             ))}
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <a href="#" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+            <a 
+              href="#" 
+              className="text-gray-600 hover:text-blue-600 font-medium transition-colors opacity-0 animate-fade-in-down"
+              style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
+            >
               Login
             </a>
-            <a href="#" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-medium transition-colors">
+            <a 
+              href="#" 
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-medium transition-colors opacity-0 animate-fade-in-down"
+              style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}
+            >
               Sign-up
             </a>
           </div>
@@ -63,7 +70,7 @@ const Header: React.FC = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
+        <div className="md:hidden bg-white border-t border-gray-200 animate-fade-in-down">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <a key={link.label} href={link.href} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
