@@ -19,8 +19,10 @@ type FormData = Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'user
 
 const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry, onNewEnquiry }) => {
   const [formData, setFormData] = useState<FormData>({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});
-  const [error, setError] = useState('');
+  const [fieldError, setFieldError] = useState('');
+  const [submissionError, setSubmissionError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (prefilledEnquiry) {
@@ -53,21 +55,46 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
   };
 
   const handlePostEnquiry = () => {
-    setError('');
+    setFieldError('');
+    setSubmissionError('');
+
     if (!isLoggedIn) {
       alert('Please log in or create an account to post an enquiry.');
       return;
     }
     if (!formData.enquiryText.trim()) {
-        setError('Please describe your requirement before submitting.');
+        setFieldError('Please describe your requirement before submitting.');
+        return;
+    }
+    if (formData.enquiryText.trim().length < 20) {
+        setFieldError('Your requirement is too short. Please provide more detail to get better matches.');
         return;
     }
 
-    onNewEnquiry(formData);
-    sendConfirmationEmail(formData);
+    setIsLoading(true);
 
-    setIsSubmitted(true);
-    setFormData({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});
+    // Simulate an API call with potential for network error
+    setTimeout(() => {
+        try {
+            // Simulate a 30% chance of failure
+            if (Math.random() < 0.3) {
+                throw new Error('Network error: Could not connect to the server. Please check your connection and try again.');
+            }
+
+            onNewEnquiry(formData);
+            sendConfirmationEmail(formData);
+            setIsSubmitted(true);
+            setFormData({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});
+        } catch (err) {
+            if (err instanceof Error) {
+                setSubmissionError(err.message);
+            } else {
+                setSubmissionError('An unexpected error occurred. Please try again later.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, 1000); // Simulate 1 second network latency
   };
 
   const postAnother = () => {
@@ -108,10 +135,10 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                         rows={3}
                         placeholder="Describe your company's or customer's requirement in detail..."
-                        aria-invalid={!!error}
+                        aria-invalid={!!fieldError}
                         aria-describedby="enquiry-error"
                     ></textarea>
-                    {error && <p id="enquiry-error" className="text-red-500 text-sm mt-2">{error}</p>}
+                    {fieldError && <p id="enquiry-error" className="text-red-500 text-sm mt-2">{fieldError}</p>}
                 </div>
 
                 <details className="group pt-2">
@@ -141,11 +168,14 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
                   </div>
                 </details>
               
+                {submissionError && <p className="text-red-500 text-sm text-center -mb-2">{submissionError}</p>}
+
                 <button
                   onClick={handlePostEnquiry}
-                  className="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-transform transform hover:scale-105 animate-pulse"
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-transform transform hover:scale-105 animate-pulse disabled:bg-blue-400 disabled:cursor-not-allowed disabled:transform-none disabled:animate-none"
                 >
-                  Post Enquiry
+                  {isLoading ? 'Submitting...' : 'Post Enquiry'}
                 </button>
             </div>
           )}

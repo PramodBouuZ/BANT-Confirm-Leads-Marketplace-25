@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Product, Banner, Vendor, Enquiry } from '../App';
+import { Product, Banner, Vendor, Enquiry, EnquiryStatus } from '../App';
 import { ProductModal, EnquiryModal, BannerModal, VendorModal } from './AdminModals';
 
 const LogoutIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>);
@@ -155,6 +154,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
         setEnquiries(enquiries.map(e => e.id === enquiryData.id ? enquiryData : e));
     };
 
+    const handleEnquiryStatusChange = (enquiryId: number, newStatus: EnquiryStatus) => {
+        setEnquiries(prevEnquiries =>
+            prevEnquiries.map(e => {
+                if (e.id === enquiryId) {
+                    const updatedEnquiry: Enquiry = { ...e, status: newStatus };
+                    // If status is no longer 'Assigned', remove the assigned vendor
+                    if (newStatus !== 'Assigned') {
+                        delete updatedEnquiry.assignedVendor;
+                    }
+                    return updatedEnquiry;
+                }
+                return e;
+            })
+        );
+    };
+
     const handleSaveBanner = (bannerBase64: string) => {
         setBanners([...banners, { id: Date.now(), image: bannerBase64 }]);
     };
@@ -187,7 +202,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
             case 'vendors':
                 return <VendorManager vendors={vendors} onDelete={handleDeleteVendor} onAdd={() => setIsVendorModalOpen(true)} />;
             case 'enquiries':
-                return <EnquiryManager enquiries={enquiries} onView={handleOpenEnquiryModal} />;
+                return <EnquiryManager enquiries={enquiries} onView={handleOpenEnquiryModal} onStatusChange={handleEnquiryStatusChange} />;
             default:
                 return null;
         }
@@ -301,7 +316,7 @@ const ProductManager: React.FC<{products: Product[], onEdit: (p: Product) => voi
     </div>
 );
 
-const EnquiryManager: React.FC<{enquiries: Enquiry[], onView: (e: Enquiry) => void}> = ({enquiries, onView}) => {
+const EnquiryManager: React.FC<{enquiries: Enquiry[], onView: (e: Enquiry) => void, onStatusChange: (id: number, status: EnquiryStatus) => void}> = ({enquiries, onView, onStatusChange}) => {
     const statusColor = { New: 'bg-blue-100 text-blue-800', Approved: 'bg-green-100 text-green-800', Rejected: 'bg-red-100 text-red-800', Assigned: 'bg-yellow-100 text-yellow-800' };
     
     const handleDownloadCSV = () => {
@@ -370,7 +385,18 @@ const EnquiryManager: React.FC<{enquiries: Enquiry[], onView: (e: Enquiry) => vo
                     <tr key={e.id} className="bg-white border-b hover:bg-gray-50">
                         <td className="px-6 py-4 font-medium text-gray-900">{e.userName}<br/><span className="text-xs text-gray-500">{e.userEmail}</span></td>
                         <td className="px-6 py-4 max-w-sm truncate">{e.enquiryText}</td>
-                        <td className="px-6 py-4"><span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor[e.status]}`}>{e.status}</span></td>
+                        <td className="px-6 py-4">
+                            <select
+                                value={e.status}
+                                onChange={(event) => onStatusChange(e.id, event.target.value as EnquiryStatus)}
+                                className={`text-xs font-medium border-0 rounded-md focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${statusColor[e.status]}`}
+                            >
+                                <option value="New">New</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Assigned">Assigned</option>
+                            </select>
+                        </td>
                         <td className="px-6 py-4"><button onClick={() => onView(e)} className="font-medium text-blue-600 hover:underline">View/Edit</button></td>
                     </tr>
                     ))}
