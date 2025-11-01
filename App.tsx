@@ -21,6 +21,18 @@ import ProactiveAssistant from './components/ProactiveAssistant';
 
 export type Page = 'home' | 'about' | 'contact' | 'privacy' | 'terms' | 'commission' | 'profile' | 'adminLogin' | 'adminDashboard';
 
+// Helper function to get the page from the URL path
+const getPageFromPath = (path: string): Page => {
+    if (path === '/') return 'home';
+    // All possible pages. Needs to be kept in sync with the Page type.
+    const validPages: Page[] = ['about', 'contact', 'privacy', 'terms', 'commission', 'profile', 'adminLogin', 'adminDashboard'];
+    const pageName = path.substring(1) as Page;
+    if (validPages.includes(pageName)) {
+        return pageName;
+    }
+    return 'home'; // Fallback to home for any unknown paths
+};
+
 export interface User {
   name: string;
   email: string;
@@ -98,7 +110,7 @@ const initialVendors: Vendor[] = [
 
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [currentPage, setCurrentPage] = useState<Page>(() => getPageFromPath(window.location.pathname));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -199,7 +211,24 @@ const App: React.FC = () => {
 
   }, [currentPage, isAdminLoggedIn]);
 
+  // Effect for handling browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPage(getPageFromPath(window.location.pathname));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   const navigate = (page: Page) => {
+    const path = page === 'home' ? '/' : `/${page}`;
+    // Only push state if the path is different to avoid duplicate history entries
+    if (window.location.pathname !== path) {
+        window.history.pushState({ page }, '', path);
+    }
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
