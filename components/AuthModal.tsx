@@ -70,7 +70,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialView, onA
                 newErrors.confirmPassword = 'Passwords do not match.';
             }
         } else if (signupStep === 2) {
-            if (!formData.company) newErrors.company = 'Company name is required.';
             if (!formData.location) newErrors.location = 'Location is required.';
         }
     }
@@ -200,7 +199,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialView, onA
             {view === 'signup' && signupStep === 2 && (
                 <>
                     <p className="text-sm text-gray-600">Welcome, {formData.name}! Just one more step.</p>
-                    {renderInput('company', 'Company Name', 'text', errors.company)}
+                    {renderInput('company', 'Company Name (Optional)', 'text', errors.company)}
                     {renderInput('location', 'Location', 'text', errors.location)}
                 </>
             )}

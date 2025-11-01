@@ -107,6 +107,10 @@ const App: React.FC = () => {
   const [filteredProductsCount, setFilteredProductsCount] = useState<number | null>(null);
   const [unmatchedSearches, setUnmatchedSearches] = useState<string[]>([]);
 
+  // Auth Modal State
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalView, setAuthModalView] = useState<'login' | 'signup'>('login');
+
   // Centralized State
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [banners, setBanners] = useState<Banner[]>(initialBanners);
@@ -200,8 +204,18 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
   
+  const openAuthModal = (view: 'login' | 'signup') => {
+    setAuthModalView(view);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+  };
+  
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    closeAuthModal();
     // Simulate fetching user data after login. In a real app, this would come from the auth response.
     setUser({
       name: 'Anil Kumar',
@@ -306,6 +320,7 @@ const App: React.FC = () => {
               prefilledEnquiry={prefilledEnquiry}
               clearPrefilledEnquiry={clearPrefilledEnquiry}
               onNewEnquiry={handleNewEnquiry}
+              onLoginRequest={() => openAuthModal('login')}
             />
             <ProductCatalog
               products={products}
@@ -346,6 +361,10 @@ const App: React.FC = () => {
         user={user}
         onLoginSuccess={handleLoginSuccess}
         onLogout={handleLogout}
+        isAuthModalOpen={isAuthModalOpen}
+        authModalView={authModalView}
+        onOpenAuthModal={openAuthModal}
+        onCloseAuthModal={closeAuthModal}
       />
       <main className="flex-grow">
         {renderUserPage()}

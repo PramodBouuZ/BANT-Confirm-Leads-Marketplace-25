@@ -33,13 +33,15 @@ interface HeaderProps {
   user: User | null;
   onLoginSuccess: () => void;
   onLogout: () => void;
+  isAuthModalOpen: boolean;
+  authModalView: 'login' | 'signup';
+  onOpenAuthModal: (view: 'login' | 'signup') => void;
+  onCloseAuthModal: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onNavigate, isLoggedIn, user, onLoginSuccess, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({ onNavigate, isLoggedIn, user, onLoginSuccess, onLogout, isAuthModalOpen, authModalView, onOpenAuthModal, onCloseAuthModal }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [authModalView, setAuthModalView] = useState<'login' | 'signup'>('login');
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
 
@@ -56,18 +58,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, isLoggedIn, user, onLoginSu
   }, []);
 
   const openAuthModal = (view: 'login' | 'signup') => {
-    setAuthModalView(view);
-    setIsAuthModalOpen(true);
+    onOpenAuthModal(view);
     setIsMenuOpen(false);
-  };
-  
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-  };
-
-  const handleAuthSuccess = () => {
-    onLoginSuccess();
-    closeAuthModal();
   };
   
   const navLinks = [
@@ -188,9 +180,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, isLoggedIn, user, onLoginSu
       </header>
       <AuthModal 
         isOpen={isAuthModalOpen} 
-        onClose={closeAuthModal}
+        onClose={onCloseAuthModal}
         initialView={authModalView}
-        onAuthSuccess={handleAuthSuccess}
+        onAuthSuccess={onLoginSuccess}
       />
     </>
   );

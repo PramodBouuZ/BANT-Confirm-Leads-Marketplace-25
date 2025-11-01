@@ -13,11 +13,12 @@ interface EnquirySectionProps {
     prefilledEnquiry: string;
     clearPrefilledEnquiry: () => void;
     onNewEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation'>) => void;
+    onLoginRequest: () => void;
 }
 
 type FormData = Omit<Enquiry, 'id' | 'status' | 'userName' | 'userEmail' | 'userMobile' | 'userCompany' | 'userLocation' | 'assignedVendor'>;
 
-const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry, onNewEnquiry }) => {
+const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEnquiry, clearPrefilledEnquiry, onNewEnquiry, onLoginRequest }) => {
   const [formData, setFormData] = useState<FormData>({ enquiryText: '', budget: '', authority: '', need: '', timeline: ''});
   const [fieldError, setFieldError] = useState('');
   const [submissionError, setSubmissionError] = useState('');
@@ -59,7 +60,7 @@ const EnquirySection: React.FC<EnquirySectionProps> = ({ isLoggedIn, prefilledEn
     setSubmissionError('');
 
     if (!isLoggedIn) {
-      alert('Please log in or create an account to post an enquiry.');
+      onLoginRequest();
       return;
     }
     if (!formData.enquiryText.trim()) {
