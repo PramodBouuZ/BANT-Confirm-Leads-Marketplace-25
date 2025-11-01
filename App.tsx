@@ -117,6 +117,10 @@ const App: React.FC = () => {
   const [hasPostedEnquiry, setHasPostedEnquiry] = useState(false);
   const [showProactiveAssistant, setShowProactiveAssistant] = useState(false);
   const hasPostedEnquiryRef = useRef(hasPostedEnquiry);
+  
+  // Ref to track if the new enquiry simulation has been triggered
+  const simulationTriggered = useRef(false);
+
   useEffect(() => {
       hasPostedEnquiryRef.current = hasPostedEnquiry;
   }, [hasPostedEnquiry]);
@@ -132,6 +136,32 @@ const App: React.FC = () => {
       });
     }
   }, [filteredProductsCount, searchTerm]);
+  
+  // Simulate a new enquiry arriving after admin logs in to test notifications
+  useEffect(() => {
+    if (isAdminLoggedIn && !simulationTriggered.current) {
+      simulationTriggered.current = true; // Ensure it only runs once per login session
+      const simulationTimer = setTimeout(() => {
+        const simulatedEnquiry: Enquiry = {
+          id: Date.now(),
+          enquiryText: "Simulated: We need a cloud-based project management tool for a team of 50 developers.",
+          budget: "₹8,00,000 Annually",
+          authority: "VP of Engineering",
+          need: "Centralize project tracking",
+          timeline: "Next quarter",
+          userName: "Simran Kaur",
+          userEmail: "simran.k@example.net",
+          userMobile: "9988776655",
+          userCompany: "Innovate Forward",
+          userLocation: "Hyderabad, India",
+          status: 'New',
+        };
+        setEnquiries(prev => [simulatedEnquiry, ...prev]);
+      }, 10000); // 10 seconds after admin dashboard loads
+
+      return () => clearTimeout(simulationTimer);
+    }
+  }, [isAdminLoggedIn]);
 
   useEffect(() => {
       // FIX: Replaced NodeJS.Timeout with number, which is the correct return type for setTimeout in a browser environment.
@@ -195,6 +225,7 @@ const App: React.FC = () => {
   
   const handleAdminLogout = () => {
     setIsAdminLoggedIn(false);
+    simulationTriggered.current = false; // Reset the simulation trigger on logout
     navigate('home');
   };
 

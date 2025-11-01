@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Product, Banner, Vendor, Enquiry } from '../App';
 import { ProductModal, EnquiryModal, BannerModal, VendorModal } from './AdminModals';
 
@@ -26,6 +26,70 @@ interface AdminDashboardProps {
 
 type AdminView = 'dashboard' | 'banners' | 'products' | 'vendors' | 'enquiries';
 
+// --- Notification Toast Component ---
+const BellIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+);
+
+interface Notification {
+    id: number;
+    message: string;
+}
+
+interface NotificationToastProps {
+    notification: Notification;
+    onDismiss: () => void;
+    onClick: () => void;
+}
+
+const NotificationToast: React.FC<NotificationToastProps> = ({ notification, onDismiss, onClick }) => {
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onDismiss();
+        }, 5000); // Auto-dismiss after 5 seconds
+
+        return () => clearTimeout(timer);
+    }, [onDismiss]);
+
+    const handleClick = () => {
+        onClick();
+        onDismiss();
+    }
+
+    return (
+        <div
+            onClick={handleClick}
+            className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden animate-fade-in-right cursor-pointer"
+            style={{ animationFillMode: 'forwards' }}
+        >
+            <div className="p-4">
+                <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                        <BellIcon />
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                        <p className="text-sm font-medium text-gray-900">New Enquiry!</p>
+                        <p className="mt-1 text-sm text-gray-500">{notification.message}</p>
+                    </div>
+                    <div className="ml-4 flex-shrink-0 flex">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onDismiss(); }}
+                            className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                            <span className="sr-only">Close</span>
+                            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
     const { unmatchedSearches, onAdminLogout, products, setProducts, banners, setBanners, vendors, setVendors, enquiries, setEnquiries } = props;
     const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -35,6 +99,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
     const [isVendorModalOpen, setIsVendorModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
+
+    // --- Notification State & Logic ---
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const prevEnquiriesCount = useRef(enquiries.length);
+
+    useEffect(() => {
+        // Check if a new enquiry has been added
+        if (enquiries.length > prevEnquiriesCount.current) {
+            const newEnquiry = enquiries[0]; // Assuming the newest is at the start
+            const newNotification: Notification = {
+                id: newEnquiry.id,
+                message: `New enquiry received from ${newEnquiry.userName}`
+            };
+            setNotifications(prev => [newNotification, ...prev].slice(0, 5)); // Keep max 5 notifications
+        }
+        // Update the ref for the next render
+        prevEnquiriesCount.current = enquiries.length;
+    }, [enquiries]);
+
+    const removeNotification = (id: number) => {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+    };
+
+    const handleNotificationClick = () => {
+        setCurrentView('enquiries');
+    };
+    // --- End Notification Logic ---
 
     const handleOpenProductModal = (product: Product | null) => {
         setSelectedProduct(product);
@@ -105,7 +196,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar currentView={currentView} setCurrentView={setCurrentView} onLogout={onAdminLogout} />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
           <header className="bg-white shadow-md w-full">
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                <h1 className="text-xl font-bold text-gray-800 capitalize">
@@ -116,6 +207,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
           <main className="flex-1 p-6 overflow-y-auto">
               {renderContent()}
           </main>
+          
+          {/* --- Notification Container --- */}
+          <div aria-live="assertive" className="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start z-50">
+            <div className="w-full flex flex-col items-center space-y-4 sm:items-end">
+                {notifications.map(notification => (
+                    <NotificationToast
+                        key={notification.id}
+                        notification={notification}
+                        onDismiss={() => removeNotification(notification.id)}
+                        onClick={handleNotificationClick}
+                    />
+                ))}
+            </div>
+          </div>
+
       </div>
       {isProductModalOpen && <ProductModal product={selectedProduct} onClose={() => setIsProductModalOpen(false)} onSave={handleSaveProduct} />}
       {isEnquiryModalOpen && selectedEnquiry && <EnquiryModal enquiry={selectedEnquiry} vendors={vendors.map(v=>v.logoUrl.split('/')[1].split('.')[0])} onClose={() => setIsEnquiryModalOpen(false)} onSave={handleSaveEnquiry} />}
